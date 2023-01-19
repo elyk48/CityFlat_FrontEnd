@@ -63,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         hintText: "exemple@gmail.com",
                         enabledBorder: OutlineInputBorder(
                           borderSide:
-                              const BorderSide(width: 1, color: Colors.blueGrey),
+                              const BorderSide(width: 2, color: Colors.blueGrey),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -125,7 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.normal,
-                              fontSize: 17,
+                              fontSize: 20,
                               color: Colors.white,
                               shadows: [
                                 for (double i = 1; i < (isPressed ? 8 : 4); i++)
@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.normal,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       shadows: [
                                         for (double i = 1;
@@ -291,7 +291,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.normal,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       shadows: [
                                         for (double i = 1;
@@ -374,7 +374,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       fontWeight: FontWeight.normal,
-                                      fontSize: 15,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       shadows: [
                                         for (double i = 1;
@@ -405,7 +405,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             fontFamily: 'Poppins',
                             decoration: TextDecoration.underline,
                             fontWeight: FontWeight.normal,
-                            fontSize: 12,
+                            fontSize: 13,
                             color: Colors.white,
                             shadows: [
                               for (double i = 1;

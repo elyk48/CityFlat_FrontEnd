@@ -10,7 +10,9 @@ class SignUpPageTwo extends StatefulWidget {
 
 class _SignUpPageTwoState extends State<SignUpPageTwo> {
   bool _obscureText = true;
+  bool _obscureText2 = true;
   bool isPressed = false;
+  bool isPressed_Cancel = false;
   bool agree = false;
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                         hintText: "username",
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 1, color: Colors.blueGrey),
+                              width: 2, color: Colors.blueGrey),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -93,7 +95,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                         hintText: "exemple@gmail.com",
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 1, color: Colors.blueGrey),
+                              width: 2, color: Colors.blueGrey),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -137,7 +139,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 1, color: Colors.blueGrey),
+                              width: 2, color: Colors.blueGrey),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -154,7 +156,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                   Container(
                     alignment: Alignment.topCenter,
                     child: TextFormField(
-                      obscureText: _obscureText,
+                      obscureText: _obscureText2,
                       enableSuggestions: false,
                       autocorrect: false,
                       style: TextStyle(
@@ -164,12 +166,12 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           color: Colors.white,
-                          icon: Icon(_obscureText
+                          icon: Icon(_obscureText2
                               ? Icons.visibility
                               : Icons.visibility_off),
                           onPressed: () {
                             setState(() {
-                              _obscureText = !_obscureText;
+                              _obscureText2 = !_obscureText2;
                             });
                           },
                         ),
@@ -181,7 +183,7 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
-                              width: 1, color: Colors.blueGrey),
+                              width: 2, color: Colors.blueGrey),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -197,28 +199,51 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                   ),
                   Row(
                     children: [
-                     Transform.scale(
-                      scale: 1.1,
-                       child:  Checkbox(
-
-                         overlayColor: MaterialStateProperty.all(Colors.white),
-                         tristate: false,
-
-                         checkColor: Colors.green,
-                         activeColor: Colors.white,
-                         fillColor:MaterialStateProperty.all(Colors.white) ,
-                         value: agree,
-                         onChanged: (value) {
-                           setState(() {
-                             agree = value ?? false;
-                           });
-                         },
-                       ),
-                     ),
-
-
+                      Transform.scale(
+                        scale: 1.1,
+                        child: Checkbox(
+                          overlayColor: MaterialStateProperty.all(Colors.white),
+                          tristate: false,
+                          checkColor: Colors.green,
+                          activeColor: Colors.white,
+                          fillColor: MaterialStateProperty.all(Colors.white),
+                          value: agree,
+                          onChanged: (value) {
+                            setState(() {
+                              agree = value ?? false;
+                            });
+                          },
+                        ),
+                      ),
+                      InkWell(
+                        child: Text(
+                          'I accept the terms and conditions.',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            color: Colors.white,
+                            shadows: [
+                              for (double i = 1;
+                              i < 5;
+                              i++)
+                                Shadow(
+                                  color: shadowColor,
+                                  blurRadius: 3*i,
+                                ),
+                            ],
+                          ),
+                        ),
+                        onTap: () => Navigator.pushNamed(context, "/signup"),
+                      ),
                     ],
                   ),
+                  SizedBox(
+                  height: 20,
+
+                  ),
+                  //continue button
                   Center(
                     child: Listener(
                       onPointerDown: (event) => setState(() {
@@ -271,6 +296,72 @@ class _SignUpPageTwoState extends State<SignUpPageTwo> {
                               color: Colors.white,
                               shadows: [
                                 for (double i = 1; i < (isPressed ? 8 : 4); i++)
+                                  Shadow(
+                                    color: shadowColor,
+                                    blurRadius: 3 * i,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+//cancel button
+                  Center(
+                    child: Listener(
+                      onPointerDown: (event) => setState(() {
+                        isPressed_Cancel = true;
+                      }),
+                      onPointerUp: (event) => setState(() {
+                        isPressed_Cancel = false;
+                      }),
+                      child: AnimatedContainer(
+                        margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        width: 340,
+                        height: 55,
+                        duration: const Duration(microseconds: 100),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: isPressed_Cancel ? backgroundcolor : null,
+                          boxShadow: [
+                            for (double i = 1; i < 5; i++)
+                              BoxShadow(
+                                color: shadowColor,
+                                blurRadius: (isPressed_Cancel ? 5 : 3) * i,
+                                inset: true,
+                              ),
+                            for (double i = 1; i < 5; i++)
+                              BoxShadow(
+                                spreadRadius: -1,
+                                color: shadowColor,
+                                blurRadius: (isPressed_Cancel ? 5 : 3) * i,
+                                blurStyle: BlurStyle.outer,
+                              ),
+                          ],
+                        ),
+                        child: TextButton(
+                          onHover: (hovered) => setState(() {
+                            this.isPressed_Cancel = hovered;
+                          }),
+                          onPressed: () {
+                            Navigator.popAndPushNamed(context, "/signup");
+                          },
+                          style: TextButton.styleFrom(
+                            side: BorderSide(color: Colors.white, width: 1.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 17,
+                              color: Colors.white,
+                              shadows: [
+                                for (double i = 1; i < (isPressed_Cancel ? 8 : 4); i++)
                                   Shadow(
                                     color: shadowColor,
                                     blurRadius: 3 * i,

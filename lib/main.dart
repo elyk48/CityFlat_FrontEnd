@@ -1,3 +1,4 @@
+import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup_two.dart';
 import 'package:cityflat/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         },
         "/navBottom": (BuildContext context) {
           return const NavigationBottom();
+        },
+        "/signin": (BuildContext context) {
+          return const SignInPage();
         },
 
 
