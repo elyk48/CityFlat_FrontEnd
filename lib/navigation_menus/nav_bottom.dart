@@ -31,42 +31,62 @@ class _NavigationBottomState extends State<NavigationBottom> {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.greenAccent, //New
-              blurRadius: 10,
+
+              color: Color(0xffad9c00), //New
+              blurRadius: 3,
+            ),
+            BoxShadow(
+
+              color: Colors.amberAccent, //New
+              blurRadius: 3,
+            ),
+            BoxShadow(
+
+              color: Color(0xffad9c00), //New
+              blurRadius: 3,
+            ),
+            BoxShadow(
+
+              color: Colors.amberAccent, //New
+              blurRadius: 3,
+            ),
+            BoxShadow(
+
+              color: Color(0xffad9c00), //New
+              blurRadius: 3,
+            ),
+            BoxShadow(
+
+              color: Color(0xffad9c00), //New
+              blurRadius: 3,
             )
           ],
         ),
         child: BottomNavigationBar(
           selectedFontSize: 15,
           selectedLabelStyle: TextStyle(
-              color: Colors.white70,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
-            shadows: [
-              for (double i = 1; i < 3; i++)
-                Shadow(
-                  color: shadowColor,
-                  blurRadius: 1*i ,
-                ),
-            ],
 
-          ),
+              color: Colors.white,
+              fontFamily: 'alethiapro',
+              fontWeight: FontWeight.bold),
           showUnselectedLabels: false,
           type: BottomNavigationBarType.shifting,
           iconSize: 30,
           items: [
             BottomNavigationBarItem(
+
               label: "Home",
+
               activeIcon: ShaderMask(
                 shaderCallback: (Rect bounds) {
                   return RadialGradient(
                     center: Alignment.topLeft,
                     radius: 1,
                     colors: <Color>[
-                      Colors.greenAccent,
-                      Colors.blueAccent,
-                      Colors.greenAccent,
-                      Colors.blueAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -77,7 +97,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
               ),
               icon: Icon(
                 Icons.home_filled,
-                color: Colors.grey,
+                color: Color.fromRGBO(206, 206, 206, 5),
               ),
               backgroundColor: Colors.black,
             ),
@@ -89,10 +109,10 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     center: Alignment.topLeft,
                     radius: 1,
                     colors: <Color>[
-                      Colors.greenAccent,
-                      Colors.blueAccent,
-                      Colors.greenAccent,
-                      Colors.blueAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -103,7 +123,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
               ),
               icon: Icon(
                 Icons.notifications,
-                color: Colors.grey,
+                color: Color.fromRGBO(206, 206, 206, 5),
               ),
               backgroundColor: Colors.black,
             ),
@@ -115,10 +135,10 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     center: Alignment.topLeft,
                     radius: 1,
                     colors: <Color>[
-                      Colors.greenAccent,
-                      Colors.blueAccent,
-                      Colors.greenAccent,
-                      Colors.blueAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -129,7 +149,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
               ),
               icon: Icon(
                 Icons.messenger_rounded,
-                color: Colors.grey,
+                color: Color.fromRGBO(206, 206, 206, 5),
               ),
               backgroundColor: Colors.black,
             ),
@@ -141,10 +161,10 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     center: Alignment.topLeft,
                     radius: 1,
                     colors: <Color>[
-                      Colors.greenAccent,
-                      Colors.blueAccent,
-                      Colors.greenAccent,
-                      Colors.blueAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
+                      Color(0xffad9c00),
+                      Colors.amberAccent,
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -155,7 +175,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
               ),
               icon: Icon(
                 Icons.person,
-                color: Colors.grey,
+                color:Color.fromRGBO(206, 206, 206, 5),
               ),
               backgroundColor: Colors.black,
             ),

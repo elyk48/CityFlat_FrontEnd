@@ -1,3 +1,6 @@
+import 'package:cityflat/newpassword.dart';
+import 'package:cityflat/resetpassword2_code.dart';
+import 'package:cityflat/resetpassword_page.dart';
 import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup_two.dart';
 import 'package:cityflat/splash_screen.dart';
@@ -35,6 +38,15 @@ class MyApp extends StatelessWidget {
         },
         "/signin": (BuildContext context) {
           return const SignInPage();
+        },
+        "/resetpassword": (BuildContext context) {
+          return const ResetpasswordPage();
+        },
+        "/resetpasswordcode": (BuildContext context) {
+          return const resetpasswordPagecode();
+        },
+        "/newpassword": (BuildContext context) {
+          return const NewpasswordPage();
         },
 
 

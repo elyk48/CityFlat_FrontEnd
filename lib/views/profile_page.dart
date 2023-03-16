@@ -1,6 +1,9 @@
+import 'package:cityflat/views/profile_info.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
+
+
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
@@ -11,10 +14,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      backgroundColor: Color.fromRGBO(8, 31, 31,5),
-      body: Text("Profile page",),
-
+      backgroundColor: Color.fromRGBO(8, 31, 31, 5),
+body: Profile_info("01455400","assets/images/appart2.jpg","elyesKabous","elyes.kabous@esprit.tn","52618182","manzeh 7","11/08/1998"),
     );
   }
 }

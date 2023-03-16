@@ -44,6 +44,12 @@ dependencies:
   flutter_inset_box_shadow: ^1.0.8
   expandable_search_bar: ^0.0.1
   anim_search_bar: ^2.0.3
+  paginated_search_bar: ^1.1.2
+  advanced_search: ^2.2.3
+  fsearch: ^2.0.0
+  syncfusion_flutter_sliders: ^20.4.44
+  webview_flutter: ^4.0.0
+  gradient_borders: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +98,15 @@ flutter:
          - asset: fonts/Poppins-Medium.ttf
          - asset: fonts/Poppins-ExtraBold.ttf
          - asset: fonts/Poppins-Bold.ttf
+     - family: alethiapro
+       fonts:
+        - asset: fonts/alethiapro-italic.otf
+        - asset: fonts/alethiapro-regular.otf
+     - family: AutourOne
+       fonts:
+        - asset: fonts/AutourOne-Regular.ttf
+
+
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

@@ -1,4 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:cityflat/paypal_testscreen.dart';
+import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -15,8 +17,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-        splash: Image.asset(
-          "assets/images/logoAnimation.gif",
+        splash: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Image.asset(
+              "assets/images/cityFlat_logo.png",
+
+            ),
+            Image.asset(
+              "assets/images/loading.gif",
+         scale:5,
+            ),
+          ],
 
         ),/*Column(
           children: [
@@ -31,7 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
         pageTransitionType: PageTransitionType.leftToRightWithFade,
         animationDuration: Duration(seconds: 1),
 
-        nextScreen: const SignUpPage());
+        nextScreen:  SignInPage()
+    );
 
 
   }
