@@ -14,7 +14,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(8, 31, 31, 5),
+      backgroundColor: Colors.black,
 body: Profile_info("01455400","assets/images/appart2.jpg","elyesKabous","elyes.kabous@esprit.tn","52618182","manzeh 7","11/08/1998"),
     );
   }

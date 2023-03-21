@@ -154,7 +154,7 @@ class _resetpasswordPagecodeState extends State<resetpasswordPagecode> {
                         ),
 
                         SizedBox(
-                          height: 40,
+                          height: 35,
                         ),
 
 
@@ -187,7 +187,7 @@ class _resetpasswordPagecodeState extends State<resetpasswordPagecode> {
 
                         Container(
                           margin: EdgeInsets.only(
-                              left: 40, right: 30, bottom: 0, top: 10),
+                              left: 40, right: 30, bottom: 0, top: 5),
                           child: Center(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

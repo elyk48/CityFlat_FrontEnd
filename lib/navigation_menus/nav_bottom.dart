@@ -37,7 +37,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
             ),
             BoxShadow(
 
-              color: Colors.amberAccent, //New
+              color: Color.fromRGBO(255, 215, 0,5), //New
               blurRadius: 3,
             ),
             BoxShadow(
@@ -47,7 +47,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
             ),
             BoxShadow(
 
-              color: Colors.amberAccent, //New
+              color: Color.fromRGBO(255, 215, 0,5), //New
               blurRadius: 3,
             ),
             BoxShadow(
@@ -84,9 +84,9 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     radius: 1,
                     colors: <Color>[
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -110,9 +110,9 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     radius: 1,
                     colors: <Color>[
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
@@ -128,7 +128,7 @@ class _NavigationBottomState extends State<NavigationBottom> {
               backgroundColor: Colors.black,
             ),
             BottomNavigationBarItem(
-              label: "Message",
+              label: "Reservations",
               activeIcon: ShaderMask(
                 shaderCallback: (Rect bounds) {
                   return RadialGradient(
@@ -136,19 +136,19 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     radius: 1,
                     colors: <Color>[
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
                 },
                 child: Icon(
-                  Icons.messenger_rounded,
+                  Icons.note_alt_outlined,
                 ),
               ),
               icon: Icon(
-                Icons.messenger_rounded,
+                Icons.note_alt_outlined,
                 color: Color.fromRGBO(206, 206, 206, 5),
               ),
               backgroundColor: Colors.black,
@@ -162,9 +162,9 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     radius: 1,
                     colors: <Color>[
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                       Color(0xffad9c00),
-                      Colors.amberAccent,
+                      Color.fromRGBO(255, 215, 0,5),
                     ],
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);

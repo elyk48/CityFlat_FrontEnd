@@ -11,19 +11,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SfRangeValues _values = const SfRangeValues(40, 80);
+  int dropdownValue = 1;
+  var  is_hovered=false;
 
   Future<void> _bottomSheet(BuildContext context) async {
     showModalBottomSheet(
-
       elevation: 40,
       isDismissible: true,
       enableDrag: true,
-
       context: context,
-
       backgroundColor: Colors.black,
       constraints: BoxConstraints(
-
         maxHeight: 450,
       ),
       builder: (context) {
@@ -35,61 +33,51 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-
-
-
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text("Filters",style:
-                        TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'alethiapro',
-                          fontWeight: FontWeight.normal,
-                          fontSize: 40,
-                        ),
-
-
-                      ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    "Filters",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'alethiapro',
+                      fontWeight: FontWeight.normal,
+                      fontSize: 40,
                     ),
-
+                  ),
+                ),
                 Container(
-                  margin: EdgeInsets.only(top: 2,bottom: 50),
+                  margin: EdgeInsets.only(top: 2, bottom: 50),
                   alignment: Alignment.topCenter,
                   child: Divider(
-                    color: Colors.white70,
+                    color: Colors.white,
                     thickness: 3,
                     indent: 0.6,
                     endIndent: 0.5,
                     height: 10,
                   ),
                 ),
-
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Text("Price range",style:
-                  TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'alethiapro',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 30,
-                  ),
-
-
+                  padding: const EdgeInsets.only(bottom: 45),
+                  child: Text(
+                    "Price range",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'alethiapro',
+                      fontWeight: FontWeight.normal,
+                      fontSize: 30,
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 50),
+                  padding: const EdgeInsets.only(bottom: 30),
                   child: SfRangeSlider(
                     activeColor: Colors.white,
-                    inactiveColor: Colors.amber,
-
+                    inactiveColor: Color.fromRGBO(255, 215, 0, 5),
                     shouldAlwaysShowTooltip: true,
                     min: 0,
                     max: 2000,
                     values: _values,
                     interval: 20,
-
-
                     onChanged: (SfRangeValues value) {
                       setState(() {
                         _values = value;
@@ -97,6 +85,60 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 50,left: 20),
+                  child: Row(
+
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+
+                     Text(
+                          "Rooms",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'alethiapro',
+                            fontWeight: FontWeight.normal,
+                            fontSize: 30,
+                          ),
+                        ),
+         SizedBox(
+
+           width: 20,
+         ),
+                      DropdownButton<int>(
+                        iconDisabledColor: Colors.white,
+                        iconEnabledColor: Colors.white,
+                        focusColor: Colors.white,
+                        elevation: 10,
+                        dropdownColor: Colors.black,
+                        iconSize: 40,
+                        // Step 3.
+                        value: 4,
+                        // Step 4.
+                        items: <int>[1, 2, 3, 4, 5]
+                            .map<DropdownMenuItem<int>>((int value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(
+                              value.toString(),
+                              style: TextStyle(fontSize: 30, color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
+                        // Step 5.
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                      ),
+
+                    ],
+
+                  ),
+                ),
+
+
 
                 ElevatedButton(
                   child: Text(
@@ -109,17 +151,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                       side: const BorderSide(
-          width: 2,
-          color: Color.fromRGBO(255, 215, 0,5),
-          ),
+                    side: const BorderSide(
+                      width: 2,
+                      color: Color.fromRGBO(255, 215, 0, 5),
+                    ),
                     minimumSize: Size(120, 50),
                     backgroundColor: Colors.black87,
                     elevation: 3,
                   ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(
-                        context, "/navBottom");
+                    Navigator.pushReplacementNamed(context, "/navBottom");
                   },
                 ),
               ],
@@ -127,13 +168,13 @@ class _HomePageState extends State<HomePage> {
           );
         });
       },
-
     );
   }
 
   @override
   Widget build(BuildContext context) {
     TextEditingController textController = TextEditingController();
+    late bool _hoverd = false;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -182,6 +223,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
+              margin: EdgeInsets.only(top: 5),
               width: 400,
               height: 60,
               child: ListView(
@@ -190,16 +232,37 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Container(
                     margin: EdgeInsets.fromLTRB(8, 0, 5, 0),
-                    child: TextButton(
-                      child: Text(
-                        "STANDARD",
-                        style: TextStyle(
+                    child: MouseRegion(
+
+                      onHover: (event) {
+                        setState(() {
+                          is_hovered=true;
+
+                        });
+
+                      },
+                      onExit: (event) {
+
+                        setState(() {
+                          is_hovered=false;
+
+                        });
+                      },
+
+                      child: TextButton(
+
+                        child: Text(
+                          "STANDARD",
+                          style: TextStyle(
                             fontSize: 21,
                             fontFamily: 'alethiapro',
                             fontWeight: FontWeight.normal,
-                            color: Colors.white),
+                            color: is_hovered
+                                ? Color.fromRGBO(255, 215, 0, 5) : Colors.white,
+                          ),
+                        ),
+                        onPressed: () {},
                       ),
-                      onPressed: () {},
                     ),
                   ),
                   Container(

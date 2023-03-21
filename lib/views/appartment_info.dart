@@ -47,7 +47,11 @@ class _AppartmentInfoState extends State<AppartmentInfo> {
             borderRadius: BorderRadius.circular(6),
           ),
           child: InkWell(
-            onTap: () {},
+            onTap: () async{
+
+
+              Navigator.pushReplacementNamed(context, "");
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
