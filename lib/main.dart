@@ -1,3 +1,4 @@
+import 'package:cityflat/apartment_details.dart';
 import 'package:cityflat/newpassword.dart';
 import 'package:cityflat/resetpassword2_code.dart';
 import 'package:cityflat/resetpassword_page.dart';
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         },
         "/newpassword": (BuildContext context) {
           return const NewpasswordPage();
+        },
+        "/appartmentDetails": (BuildContext context) {
+          return const ApartmentDetails();
         },
 
 

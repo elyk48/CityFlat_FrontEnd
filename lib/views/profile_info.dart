@@ -601,7 +601,7 @@ containerHeight: 400,
 
 
               Padding(
-                padding: const EdgeInsets.only(top:20,bottom: 30),
+                padding: const EdgeInsets.only(top:20,bottom: 20),
                 child: Container(
                   width: 200,
                   child: ElevatedButton(
@@ -625,6 +625,37 @@ containerHeight: 400,
                     ),
                     onPressed: () {
                       Navigator.pushReplacementNamed(context, "/navBottom");
+                    },
+                  ),
+                ),
+              ),
+
+
+              Padding(
+                padding: const EdgeInsets.only(top:10,bottom: 30),
+                child: Container(
+                  width: 220,
+                  child: ElevatedButton(
+                    child: Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontFamily: 'alethiapro',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 30,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      side: const BorderSide(
+                        width: 2,
+                        color: Colors.white,
+                      ),
+                      minimumSize: Size(120, 50),
+                      backgroundColor: Colors.black87,
+                      elevation: 3,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, "/signin");
                     },
                   ),
                 ),

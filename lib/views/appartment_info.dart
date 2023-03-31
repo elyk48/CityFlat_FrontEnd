@@ -50,7 +50,7 @@ class _AppartmentInfoState extends State<AppartmentInfo> {
             onTap: () async{
 
 
-              Navigator.pushReplacementNamed(context, "");
+              Navigator.pushReplacementNamed(context, "/appartmentDetails");
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
