@@ -26,13 +26,44 @@ class UserController {
 
 
   static Future<http.Response> registerUser(UserE user) async {
+    Map<String, dynamic> userData = {
+      "name":user.name,
+      "email": user.email,
+      "password": user.password,
+      "number":user.phoneNumber,
+    };
+    print("userdata : "+userData.toString());
     var url = Uri.http(baseUrl, "/user/register");
     return await http.post(
       url,
       headers: Utils.headers,
-      body: json.encode(user),
+      body:  jsonEncode(userData),
     );
   }
 
+
+  static Future<http.Response> VerifyUser_email(String email,int code) async {
+    Map<String, dynamic> body = {
+      "verificationCode":code
+    };
+
+    var url = Uri.http(baseUrl, "/user/verify/"+email);
+    return await http.post(
+      url,
+      headers: Utils.headers,
+      body:  jsonEncode(body),
+    );
+  }
+
+  static Future<http.Response> ResendEmailCode(String email) async {
+
+
+    var url = Uri.http(baseUrl, "/user/verify/"+email);
+    return await http.get(
+      url,
+      headers: Utils.headers,
+
+    );
+  }
 
 }

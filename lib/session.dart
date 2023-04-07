@@ -13,7 +13,7 @@ class Session {
     user.email = prefs.getString("user_email")!;
     user.address = prefs.getString("user_address")!;
     user.phoneNumber = prefs.getString("user_phoneNumber")!;
-    user.Birthdate = DateTime.parse(prefs.getString("user_birthdate")!);
+    //user.Birthdate = DateTime.tryParse(prefs.getString("user_birthdate")!,)!;
     user.img = prefs.getString("user_image")!;
     user.token = prefs.getString("user_token")!;
     user.stripeCustomerID = prefs.getString("user_StripeId")!;
@@ -29,36 +29,32 @@ class Session {
       return value;
     });
 
-    UserE userFromServer = new UserE(
+    UserE userFromServer = new UserE.signup(
         user["id"],
         user["name"],
         user["email"],
         user['password'],
         user['number'],
-        user['address'],
-        DateTime.parse(user['birthdate']),
+        //user['address'],
+       // DateTime.parse(user['birthdate']),
         user['role'],
-        user['img'],
-        user['token'],
-        user['stripeCustomerID'],
+       // user['img'],
+
+       // user['stripeCustomerID'],
         user['isVerified']);
-    prefs.setString("user_id", userFromServer.id)!;
+    prefs.setString("user_id", userFromServer.id);
 
-    prefs.setString("user_name", userFromServer.name)!;
+    prefs.setString("user_name", userFromServer.name);
 
-    prefs.setString("user_role", userFromServer.role)!;
+    prefs.setString("user_role", userFromServer.role);
 
-    prefs.setString("user_email", userFromServer.email)!;
+    prefs.setString("user_email", userFromServer.email);
 
-    prefs.setString("user_address", userFromServer.address)!;
 
-    prefs.setString("user_phoneNumber", userFromServer.phoneNumber)!;
 
-    prefs.setString("user_birthdate",userFromServer.toString())!;
-    prefs.setString("user_image",userFromServer.img)!;
-    prefs.setString("user_token",userFromServer.token)!;
-    prefs.setString("user_StripeId",userFromServer.stripeCustomerID)!;
-    prefs.setBool("user_isVerified",userFromServer.isVerified)!;
+    prefs.setString("user_phoneNumber", userFromServer.phoneNumber);
+
+    prefs.setBool("user_isVerified",userFromServer.isVerified);
 
     print("User session updated to user  : " + userFromServer.id + " name: " + userFromServer.name);
 

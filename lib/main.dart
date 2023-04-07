@@ -5,6 +5,7 @@ import 'package:cityflat/resetpassword_page.dart';
 import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup_two.dart';
 import 'package:cityflat/splash_screen.dart';
+import 'package:cityflat/views/email_verification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cityflat/signup.dart';
 
@@ -51,6 +52,9 @@ class MyApp extends StatelessWidget {
         },
         "/appartmentDetails": (BuildContext context) {
           return const ApartmentDetails();
+        },
+        "/verify-email": (BuildContext context) {
+          return const verifyEmail();
         },
 
 

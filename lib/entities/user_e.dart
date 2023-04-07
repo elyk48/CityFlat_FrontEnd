@@ -1,10 +1,6 @@
-
-
-
 import 'dart:convert';
 
-class UserE  {
-
+class UserE {
   late String _id;
   late String _name;
   late String _email;
@@ -13,17 +9,20 @@ class UserE  {
   late String _address;
   late DateTime _Birthdate;
   late String _role;
-  late  String _img;
+  late String _img;
   late String _token;
   late String _stripeCustomerID;
   late bool _isVerified;
-
 
   bool get isVerified => _isVerified;
 
   set isVerified(bool value) {
     _isVerified = value;
   }
+
+
+  UserE.signup(this._id, this._name, this._email, this._password,
+      this._phoneNumber,  this._role, this._isVerified);
 
   UserE(
       this._id,
@@ -39,7 +38,7 @@ class UserE  {
       this._stripeCustomerID,
       this._isVerified);
 
-
+  UserE.noarg();
   UserE.name(
       this._id,
       this._name,
@@ -152,10 +151,26 @@ class UserE  {
     _id = value;
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "name": _name,
+      "email": _email,
+      "number": _phoneNumber,
+      "password": _password,
+    };
+  }
 
+  String singleUserToJson(UserE data) => json.encode(data.toJson());
 
-
-
-
-
+  String userModelToJson(List<UserE> data) {
+    return json.encode(
+      List<dynamic>.from(
+        data.map(
+          (x) {
+            return x.toJson();
+          },
+        ),
+      ),
+    );
+  }
 }
