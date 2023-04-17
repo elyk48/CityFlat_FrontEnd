@@ -7,9 +7,16 @@ class UserE {
   late String _password;
   late String _phoneNumber;
   late String _address;
-  late DateTime _Birthdate;
+  late String _Birthdate;
   late String _role;
   late String _img;
+
+  String get Birthdate => _Birthdate;
+
+  set Birthdate(String value) {
+    _Birthdate = value;
+  }
+
   late String _token;
   late String _stripeCustomerID;
   late bool _isVerified;
@@ -51,6 +58,17 @@ class UserE {
       this._img,
       this._token,
       this._stripeCustomerID,
+      this._isVerified);
+  UserE.NoA_B_I_S(
+      this._id,
+      this._name,
+      this._email,
+      this._password,
+      this._phoneNumber,
+      this._role,
+
+      this._token,
+
       this._isVerified);
 
   String get password => _password;
@@ -115,11 +133,6 @@ class UserE {
     _role = value;
   }
 
-  DateTime get Birthdate => _Birthdate;
-
-  set Birthdate(DateTime value) {
-    _Birthdate = value;
-  }
 
   String get address => _address;
 

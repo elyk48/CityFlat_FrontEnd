@@ -9,9 +9,15 @@ class   Apartment{
  late String _description;
  late double _pricePerNight;
 
- late List<BookedDates> _bookeddates;
+  String get type => _type;
+
+  set type(String value) {
+    _type = value;
+  }
+
+  late List<BookedDates> _bookeddates;
   late List<service> _services;
-ApartmentType _type =ApartmentType.STANDARD;
+String _type ;
 late String _location;
 late int _rooms;
 late String _img;
@@ -28,7 +34,17 @@ late String _img;
       this._location,
       this._rooms,
       this._img);
+  Apartment.Booked(
+      this._id,
+      this._name,
+      this._description,
+      this._pricePerNight,
 
+
+      this._type,
+      this._location,
+      this._rooms,
+      this._img);
 
   List<service> get services => _services;
 
@@ -58,12 +74,6 @@ late String _img;
 
   set location(String value) {
     _location = value;
-  }
-
-  ApartmentType get type => _type;
-
-  set type(ApartmentType value) {
-    _type = value;
   }
 
   List<BookedDates> get bookeddates => _bookeddates;

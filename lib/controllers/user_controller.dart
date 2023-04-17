@@ -66,4 +66,28 @@ class UserController {
     );
   }
 
+  static Future<http.Response> FetchUser(String id) async {
+
+
+    var url = Uri.http(baseUrl, "/user/"+id);
+
+
+    return await http.get(
+      url,
+      headers: Utils.headers,
+
+    );
+  }
+
+  static Future<http.Response> updateUser(
+      UserE user, String token) async {
+    var url = Uri.http(baseUrl, "/user/${user.id}");
+    return await http.put(
+      url,
+      headers: Utils.authorizationHeaders(token),
+      body: json.encode(user.toJson()),
+    );
+  }
+
+
 }

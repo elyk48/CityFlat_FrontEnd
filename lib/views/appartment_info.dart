@@ -6,8 +6,7 @@ class AppartmentInfo extends StatefulWidget {
   final String _name;
   final String _description;
   final double _pricePerNight;
-  final String _FromDate;
-  final String _ToDate;
+
   final String _Location;
   final int _rooms;
   final double _rate;
@@ -17,8 +16,7 @@ class AppartmentInfo extends StatefulWidget {
       this._image,
       this._name,
       this._description,
-      this._FromDate,
-      this._ToDate,
+
       this._pricePerNight,
       this._Location,
       this._rooms,
@@ -62,7 +60,7 @@ class _AppartmentInfoState extends State<AppartmentInfo> {
                   child: Image.asset(
                     widget._image,
                     width: 500,
-                    height: 300,
+                    height: 250,
                   ),
                 ),
 

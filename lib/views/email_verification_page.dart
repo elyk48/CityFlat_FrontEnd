@@ -262,10 +262,40 @@ class _verifyEmailState extends State<verifyEmail> {
 
 
                         TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             setState(() {
 
                             });
+
+                            late UserE user= new UserE.noarg();
+                            var prefs = await SharedPreferences.getInstance();
+
+
+                            await Session.getUser_from_prefs(user).then( (value) {
+                              user=value;
+                            });
+                            print(prefs.getString("user_email"));
+                            http.Response? res ;
+                            try{
+                              await UserController.ResendEmailCode(user.email).then((value) => {res = value});
+                            }
+                            catch(e){
+
+                              print(e);
+                            }
+
+
+
+                            if(res!.statusCode==200 ||res!.statusCode==201){
+
+
+                            print("code resent to "+user.email.toString());
+
+                            }
+                            else {
+                              print(res!.reasonPhrase.toString());
+
+                            }
 
                           },
                           child: Text(

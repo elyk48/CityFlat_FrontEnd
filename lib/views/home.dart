@@ -1,15 +1,98 @@
+import 'dart:convert';
+import 'dart:ffi';
+
+import 'package:cityflat/controllers/apartment_controller.dart';
+import 'package:cityflat/entities/user_e.dart';
+import 'package:cityflat/session.dart';
+import 'package:cityflat/splash_screen.dart';
 import 'package:flutter/material.dart';
+import '../entities/apartment_e.dart';
 import 'appartment_info.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
+
+
 }
 
+
+
 class _HomePageState extends State<HomePage> {
+   late Future<bool> fetchedAparts =Future.value(false);
+   bool _shouldReloadData = false;
+  UserE user = new UserE.noarg();
+
+   List<Apartment> _apparts = [];
+   Future<List<Apartment>> fetchAparts() async {
+     await Session.getUser_from_prefs(user).then((value) => user = value);
+
+     List<dynamic> aparts=[];
+     await ApartmentController.fetchAparts(user.token).then((value) async {
+       aparts = json.decode(value.body);
+     });
+
+     List<Apartment> _apparts = [];
+
+     for (int i = 0; i < aparts.length; i++) {
+       setState(() {
+         Map<String, dynamic> apartment = aparts[i];
+         _apparts.add(Apartment.Booked(
+           apartment["id"],
+           apartment["name"],
+           apartment["description"],
+           apartment["pricePerNight"].toDouble() ,
+
+
+           apartment["type"],
+           apartment["location"],
+           apartment["rooms"],
+           apartment["img"],
+         ));
+       });
+
+     }
+
+     return _apparts;
+   }
+
+  @override
+void initState()   {
+    setState(() {
+      fetchAparts().then((value) => {
+        setState(() {
+          _apparts=value;
+        }),
+
+      });
+
+
+
+    });
+
+    super.initState();
+  }
+
+
+   @override
+   void didUpdateWidget(HomePage oldWidget) {
+     super.didUpdateWidget(oldWidget);
+     if (_shouldReloadData) {
+       setState(() {
+           fetchAparts().then((value) {
+             _apparts=value;
+           });
+         _shouldReloadData = false;
+       });
+     }
+   }
+
+
+
   SfRangeValues _values = const SfRangeValues(40, 80);
   int dropdownValue = 1;
   var  is_hovered=false;
@@ -155,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                       width: 2,
                       color: Color.fromRGBO(255, 215, 0, 5),
                     ),
-                    minimumSize: Size(120, 50),
+
                     backgroundColor: Colors.black87,
                     elevation: 3,
                   ),
@@ -175,6 +258,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     TextEditingController textController = TextEditingController();
     late bool _hoverd = false;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -299,43 +383,32 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: ListView(
-        children: [
-          AppartmentInfo(
-              "1231455ffxtx",
-              'assets/images/appartment.jpg',
-              'Tokyo Appartment',
-              "the best and most comfortable appartment in the building",
-              "19/02/2023",
-              "24/02/2023",
-              150.0,
-              "berlin",
-              4,
-              4.5),
-          AppartmentInfo(
-              "1231455ffxtx",
-              'assets/images/appart2.jpg',
-              'China Appartment',
-              "A beautiful cosy modern chamber , well organized and makes you feel home. ",
-              "19/02/2023",
-              "24/02/2023",
-              150.0,
-              "berlin",
-              4,
-              3.5),
-          AppartmentInfo(
-              "1231455ffxtx",
-              'assets/images/modernAppartment.jpg',
-              'Modern Appartment',
-              "A charming modern appartment , well organized. ",
-              "19/02/2023",
-              "24/02/2023",
-              150.0,
-              "berlin",
-              4,
-              4.7),
-        ],
+      body:FutureBuilder(
+
+        future: fetchedAparts,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if(snapshot.hasData) {
+            return ListView.builder(
+              itemCount: _apparts.length,
+              itemBuilder: (BuildContext context,int index) {
+                return AppartmentInfo(_apparts[index].id,"assets/images/appartment.jpg",_apparts[index].name,
+                  _apparts[index].description,_apparts[index].pricePerNight,_apparts[index].location,_apparts[index].rooms,4.4);
+              },
+            );
+          }
+          else {
+            return  LinearProgressIndicator(
+              value: 10,
+              color: Colors.red, //<-- SEE HERE
+              backgroundColor: Colors.red, //<-- SEE HERE
+            );
+          }
+        },
       ),
+
     );
   }
 }
+
+
+

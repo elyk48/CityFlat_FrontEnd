@@ -13,7 +13,7 @@ class Session {
     user.email = prefs.getString("user_email")!;
     user.address = prefs.getString("user_address")!;
     user.phoneNumber = prefs.getString("user_phoneNumber")!;
-    //user.Birthdate = DateTime.tryParse(prefs.getString("user_birthdate")!,)!;
+    user.Birthdate = prefs.getString("user_birthdate")!;
     user.img = prefs.getString("user_image")!;
     user.token = prefs.getString("user_token")!;
     user.stripeCustomerID = prefs.getString("user_StripeId")!;
