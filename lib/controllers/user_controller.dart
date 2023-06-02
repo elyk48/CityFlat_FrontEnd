@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 
 import '../config/config.dart';
 
+import '../entities/order_e.dart';
+import '../entities/service_e.dart';
 import '../utils.dart';
 
 class UserController {
@@ -80,13 +82,82 @@ class UserController {
   }
 
   static Future<http.Response> updateUser(
-      UserE user, String token) async {
-    var url = Uri.http(baseUrl, "/user/${user.id}");
+  String name ,String email  ,String number , String address, String Birthdate, String token,String UserId) async {
+
+    Map<String, dynamic> userData = {
+      "name":name,
+      "email": email,
+
+      "number":number,
+      "address":address,
+      "birthdate":Birthdate
+    };
+    var url = Uri.http(baseUrl, "/user/${UserId}");
     return await http.put(
       url,
       headers: Utils.authorizationHeaders(token),
-      body: json.encode(user.toJson()),
+      body: json.encode(userData),
     );
+  }
+
+  static Future<http.Response> getMyOrders(
+      UserE user) async {
+    var url = Uri.http(baseUrl, "/user/orders/GetallUO");
+    return await http.get(
+      url,
+      headers: Utils.authorizationHeaders(user.token),
+
+    );
+  }
+
+  static Future<http.Response> getMyReservations(
+      UserE user, String token) async {
+    var url = Uri.http(baseUrl, "/user/reservations/getallmy");
+    return await http.get(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+  static Future<http.Response> getMyNotifications(
+     String token) async {
+    var url = Uri.http(baseUrl, "/user/notifications/usernotif");
+    return await http.get(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+  //create order
+  static Future<http.Response?> CreateOrder(double totalprice, String description, String checkin, String checkout, double serviceFees, double nightfees, String token, String apartId, String UserId,List<String> services ) async {
+    var url = Uri.http(baseUrl, "/user/reservations/createOrder");
+
+    Map<String, dynamic> body = {
+      "User": UserId,
+      "totalPrice": totalprice,
+      "description": description,
+      "checkIn": checkin,
+      "checkOut": checkout,
+      "servicesFee": serviceFees,
+      "nightsFee": nightfees,
+      "appartment": apartId,
+      "services" : services,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: Utils.authorizationHeaders(token),
+        body: json.encode(body),
+      );
+
+      return response;
+    } catch (e) {
+      print('Error creating order: $e');
+      return null; // Return null or an appropriate value to handle the error.
+    }
   }
 
 

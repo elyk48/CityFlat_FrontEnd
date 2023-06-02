@@ -5,8 +5,39 @@ class service {
   late double _pricePerNight;
   late String _img;
 
+
+
   service(
       this._id, this._name, this._description, this._pricePerNight, this._img);
+
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'name': _name,
+      'description': _description,
+      'pricePerNight': _pricePerNight,
+      'img': _img,
+    };
+  }
+
+  factory service.fromJson(Map<String, dynamic> json) {
+    final pricePerNight = json['pricePerNight'];
+    final double price = pricePerNight is int ? pricePerNight.toDouble() : pricePerNight;
+
+    return service(
+      json['_id'],
+      json['name'],
+      json['description'],
+      price,
+      json['img'],
+    );
+  }
+  @override
+  String toString() {
+    return 'service{_id: $_id, _name: $_name, _description: $_description, _pricePerNight: $_pricePerNight, _img: $_img}';
+  }
 
   service.name(
       this._id, this._name, this._description, this._pricePerNight, this._img);

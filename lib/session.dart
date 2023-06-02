@@ -19,7 +19,7 @@ class Session {
     user.stripeCustomerID = prefs.getString("user_StripeId")!;
     user.isVerified = prefs.getBool("user_isVerified")!;
 
-    print("From Session class  user is : " + user.id + " name: " + user.name);
+    print(" getting user  from prefs  : " + user.id + " name: " + user.name);
 
     return user;
   }
@@ -41,7 +41,8 @@ class Session {
        // user['img'],
 
        // user['stripeCustomerID'],
-        user['isVerified']);
+        user['isVerified'],
+    user["token"]);
     prefs.setString("user_id", userFromServer.id);
 
     prefs.setString("user_name", userFromServer.name);
@@ -50,7 +51,7 @@ class Session {
 
     prefs.setString("user_email", userFromServer.email);
 
-
+  prefs.setString("user_token", userFromServer.token);
 
     prefs.setString("user_phoneNumber", userFromServer.phoneNumber);
 

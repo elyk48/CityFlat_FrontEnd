@@ -26,8 +26,125 @@ class _HomePageState extends State<HomePage> {
    late Future<bool> fetchedAparts =Future.value(false);
    bool _shouldReloadData = false;
   UserE user = new UserE.noarg();
-
+String searchTxt ="";
    List<Apartment> _apparts = [];
+
+   //fetch aparts with filter
+   Future<List<Apartment>> fetchApartsByfilter() async {
+     await Session.getUser_from_prefs(user).then((value) => user = value);
+
+     List<dynamic> aparts=[];
+     Map<String, dynamic> data={
+
+       "minPrice":double.parse(_values.start.toString()),
+       "maxPrice":double.parse(_values.end.toString()),
+       "rooms":dropdownValue,
+
+
+     };
+     await ApartmentController.fetchApartsFilter(data).then((value) async {
+
+       aparts = json.decode(value.body);
+
+     });
+
+     List<Apartment> _apparts = [];
+
+     for (int i = 0; i < aparts.length; i++) {
+       setState(() {
+         Map<String, dynamic> apartment = aparts[i];
+         print(apartment.toString());
+         _apparts.add(Apartment.Booked(
+           apartment["id"],
+           apartment["name"],
+           apartment["description"],
+           apartment["pricePerNight"].toDouble() ,
+
+
+           apartment["type"],
+           apartment["location"],
+           apartment["rooms"],
+           apartment["img"],
+         ));
+       });
+
+     }
+     //print("aparts inside the function : "+ _apparts.toString());
+
+     return _apparts;
+   }
+
+   Future<List<Apartment>> fetchApartsByType(String type) async {
+     await Session.getUser_from_prefs(user).then((value) => user = value);
+
+     List<dynamic> aparts=[];
+
+     await ApartmentController.FilterByType(type).then((value) async {
+
+       aparts = json.decode(value.body);
+
+     });
+
+     List<Apartment> _apparts = [];
+
+     for (int i = 0; i < aparts.length; i++) {
+       setState(() {
+         Map<String, dynamic> apartment = aparts[i];
+         print(apartment.toString());
+         _apparts.add(Apartment.Booked(
+           apartment["id"],
+           apartment["name"],
+           apartment["description"],
+           apartment["pricePerNight"].toDouble() ,
+
+
+           apartment["type"],
+           apartment["location"],
+           apartment["rooms"],
+           apartment["img"],
+         ));
+       });
+
+     }
+     //print("aparts inside the function : "+ _apparts.toString());
+
+     return _apparts;
+   }
+
+   Future<List<Apartment>> fetchApartsByName() async {
+     await Session.getUser_from_prefs(user).then((value) => user = value);
+
+     List<dynamic> aparts = [];
+
+
+     // Call the FilterByname function with the desired text value
+     await ApartmentController.FilterByname(searchTxt).then((value) async {
+       aparts = json.decode(value.body);
+     });
+
+     List<Apartment> _apparts = [];
+
+     for (int i = 0; i < aparts.length; i++) {
+       setState(() {
+         Map<String, dynamic> apartment = aparts[i];
+         print(apartment.toString());
+         _apparts.add(
+           Apartment.Booked(
+             apartment["id"],
+             apartment["name"],
+             apartment["description"],
+             apartment["pricePerNight"].toDouble(),
+             apartment["type"],
+             apartment["location"],
+             apartment["rooms"],
+             apartment["img"],
+           ),
+         );
+       });
+     }
+
+     return _apparts;
+   }
    Future<List<Apartment>> fetchAparts() async {
      await Session.getUser_from_prefs(user).then((value) => user = value);
 
@@ -59,6 +176,8 @@ class _HomePageState extends State<HomePage> {
 
      return _apparts;
    }
+
+
 
   @override
 void initState()   {
@@ -196,7 +315,7 @@ void initState()   {
                         dropdownColor: Colors.black,
                         iconSize: 40,
                         // Step 3.
-                        value: 4,
+                        value: dropdownValue,
                         // Step 4.
                         items: <int>[1, 2, 3, 4, 5]
                             .map<DropdownMenuItem<int>>((int value) {
@@ -242,8 +361,18 @@ void initState()   {
                     backgroundColor: Colors.black87,
                     elevation: 3,
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, "/navBottom");
+                  onPressed: () async {
+                    
+
+                   await fetchApartsByfilter().then((value) => {
+
+                      setState(() {
+                        _apparts=value;
+                      }),
+
+                    });
+
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -279,6 +408,23 @@ void initState()   {
               ),
               child: Center(
                 child: TextField(
+                  onSubmitted: (value) async {
+                    await fetchApartsByName().then((value) => {
+
+                      setState(() {
+                        _apparts=value;
+                      }),
+
+                    });
+
+                  },
+                  onChanged: (value) {
+    setState(() {
+      searchTxt=value;
+
+    });
+
+                  },
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
                       border: InputBorder.none,
@@ -345,7 +491,17 @@ void initState()   {
                                 ? Color.fromRGBO(255, 215, 0, 5) : Colors.white,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+
+                          await fetchApartsByType("STANDARD").then((value) => {
+
+                            setState(() {
+                              _apparts=value;
+                            }),
+
+                          });
+                          
+                        },
                       ),
                     ),
                   ),
@@ -360,7 +516,17 @@ void initState()   {
                             fontWeight: FontWeight.normal,
                             color: Colors.white),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+
+                        await fetchApartsByType("PREMIUM").then((value) => {
+
+                          setState(() {
+                            _apparts=value;
+                          }),
+
+                        });
+
+                      },
                     ),
                   ),
                   Container(
@@ -374,7 +540,17 @@ void initState()   {
                             fontWeight: FontWeight.normal,
                             color: Colors.white),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+
+                        await fetchApartsByType("LUXURY").then((value) => {
+
+                          setState(() {
+                            _apparts=value;
+                          }),
+
+                        });
+
+                      },
                     ),
                   ),
                 ],
@@ -391,8 +567,29 @@ void initState()   {
             return ListView.builder(
               itemCount: _apparts.length,
               itemBuilder: (BuildContext context,int index) {
-                return AppartmentInfo(_apparts[index].id,"assets/images/appartment.jpg",_apparts[index].name,
-                  _apparts[index].description,_apparts[index].pricePerNight,_apparts[index].location,_apparts[index].rooms,4.4);
+
+
+                if (index < _apparts.length) {
+                  return AppartmentInfo.Nog(
+                    _apparts[index].id,
+                    "assets/images/appartment.jpg",
+                    _apparts[index].name,
+                    _apparts[index].description,
+                    _apparts[index].pricePerNight,
+                    _apparts[index].location,
+                    _apparts[index].rooms,
+                    4.4,
+                  );
+                } else {
+                  return Container(
+alignment: Alignment.center,
+                    child: Text("NO RESULTS",style: TextStyle(
+                        fontSize: 21,
+                        fontFamily: 'alethiapro',
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black),),
+                  ); // Placeholder widget if index is out of range
+                }
               },
             );
           }

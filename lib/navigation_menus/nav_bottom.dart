@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:cityflat/views/home.dart';
 import 'package:cityflat/views/messages_page.dart';
 import 'package:cityflat/views/notification_page.dart';
 import 'package:cityflat/views/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../controllers/user_controller.dart';
+import '../reservation_page.dart';
+import 'package:badges/badges.dart' as badges;
 class NavigationBottom extends StatefulWidget {
   const NavigationBottom({Key? key}) : super(key: key);
 
@@ -12,16 +18,64 @@ class NavigationBottom extends StatefulWidget {
 }
 
 class _NavigationBottomState extends State<NavigationBottom> {
+  int unreadCount = 0;
+  @override
+  void initState() {
+    super.initState();
+    initializeUnreadCount(); // Call the method to initialize unreadCount
+  }
+
+  Future<void> initializeUnreadCount() async {
+    await fetchUnreadCount(); // Wait for fetchUnreadCount to complete
+    print("notification count $unreadCount");
+  }
+
+  Future<void> fetchUnreadCount() async {
+    try {
+      var prefs = await SharedPreferences.getInstance();
+
+      var response = await UserController.getMyNotifications(prefs.getString("user_token").toString());
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonNotifications = jsonDecode(response.body);
+
+        int count = 0;
+
+        for (int i = 0; i < jsonNotifications.length; i++) {
+          Map<String, dynamic> notificationData = jsonNotifications[i];
+          bool read = notificationData['read'];
+
+          if (!read) {
+            count++;
+          }
+        }
+
+        setState(() {
+          unreadCount = count;
+        });
+      } else {
+        throw Exception('Failed to fetch notifications. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle specific error cases if needed
+      print('Error counting unread notifications: $error');
+      throw Exception('Failed to count unread notifications');
+    }
+  }
+
+
   int _currentIndex = 0;
   final List<Widget> _interfaces = [
     HomePage(),
     NotificationPage(),
-    MessagesPage(),
+    ReservationPage(),
     ProfilePage()
   ];
 
   @override
   Widget build(BuildContext context) {
+
+
     Color shadowColor = Colors.greenAccent;
     return Scaffold(
       body: _interfaces[_currentIndex],
@@ -117,9 +171,14 @@ class _NavigationBottomState extends State<NavigationBottom> {
                     tileMode: TileMode.mirror,
                   ).createShader(bounds);
                 },
-                child: Icon(
-                  Icons.notifications,
-                ),
+                child:     badges.Badge(
+                  badgeContent: Text(unreadCount.toString(),style:  TextStyle(
+
+                      color: Colors.white,
+                      fontFamily: 'alethiapro',
+                      fontWeight: FontWeight.bold),),
+                  child: Icon(Icons.notifications),
+                )
               ),
               icon: Icon(
                 Icons.notifications,

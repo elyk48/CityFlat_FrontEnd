@@ -29,7 +29,7 @@ class UserE {
 
 
   UserE.signup(this._id, this._name, this._email, this._password,
-      this._phoneNumber,  this._role, this._isVerified);
+      this._phoneNumber,  this._role, this._isVerified, this._token);
 
   UserE(
       this._id,
@@ -45,6 +45,20 @@ class UserE {
       this._stripeCustomerID,
       this._isVerified);
 
+
+  UserE.NOTOK(
+      this._id,
+      this._name,
+      this._email,
+      this._password,
+      this._phoneNumber,
+      this._address,
+      this._Birthdate,
+      this._role,
+      this._img,
+
+      this._stripeCustomerID,
+      this._isVerified);
   UserE.noarg();
   UserE.name(
       this._id,
@@ -59,6 +73,8 @@ class UserE {
       this._token,
       this._stripeCustomerID,
       this._isVerified);
+
+
   UserE.NoA_B_I_S(
       this._id,
       this._name,
@@ -171,6 +187,39 @@ class UserE {
       "number": _phoneNumber,
       "password": _password,
     };
+  }
+  Map<String, dynamic> AllToJson() {
+    return {
+      "id": _id,
+      "name": _name,
+      "email": _email,
+      "password": _password,
+      "number": _phoneNumber,
+      "address": _address,
+      "birthDate": _Birthdate,
+      "role": _role,
+
+      "token": _token,
+
+      "isVerified": _isVerified,
+    };
+  }
+
+
+  factory UserE.fromJson(Map<String, dynamic> json) {
+    return UserE.NOTOK(
+      json['_id'],
+      json['name'],
+      json['email'],
+      json['password'],
+      json['number'],
+      json['address'],
+      json['birthdate'],
+      json['role'],
+      json['img'],
+      json['stripeCustomerID'],
+      json['isVerified'],
+    );
   }
 
   String singleUserToJson(UserE data) => json.encode(data.toJson());

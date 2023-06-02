@@ -1,4 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../controllers/apartment_controller.dart';
+import '../entities/apartment_e.dart';
+import '../entities/service_e.dart';
 
 class AppartmentInfo extends StatefulWidget {
   final String _id;
@@ -6,12 +14,16 @@ class AppartmentInfo extends StatefulWidget {
   final String _name;
   final String _description;
   final double _pricePerNight;
+  late Apartment _apartment;
 
   final String _Location;
   final int _rooms;
   final double _rate;
 
-  const AppartmentInfo(
+
+   AppartmentInfo.Nog(
+
+
       this._id,
       this._image,
       this._name,
@@ -22,12 +34,25 @@ class AppartmentInfo extends StatefulWidget {
       this._rooms,
       this._rate);
 
+
+  AppartmentInfo(
+      this._id,
+      this._image,
+      this._name,
+      this._description,
+      this._pricePerNight,
+      this._apartment,
+      this._Location,
+      this._rooms,
+      this._rate);
+
   @override
   State<AppartmentInfo> createState() => _AppartmentInfoState();
 }
 
 class _AppartmentInfoState extends State<AppartmentInfo> {
   bool _alreadySaved = false;
+  late Map<String,dynamic> ApartFromServ;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -46,9 +71,23 @@ class _AppartmentInfoState extends State<AppartmentInfo> {
           ),
           child: InkWell(
             onTap: () async{
+              var _prefs =  await SharedPreferences.getInstance();
+             await ApartmentController.getOneApartment(widget._id).then((value) => {
+setState((){
+
+  ApartFromServ=jsonDecode(value.body);
+})
 
 
-              Navigator.pushReplacementNamed(context, "/appartmentDetails");
+              });
+              List<service> _services =[];
+
+
+
+              Navigator.pushReplacementNamed(context, "/appartmentDetails",arguments: [
+                ApartFromServ,
+
+              ]);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,

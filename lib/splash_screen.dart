@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:cityflat/paypal_testscreen.dart';
+
 import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup.dart';
 import 'package:flutter/material.dart';

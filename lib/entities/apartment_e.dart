@@ -15,12 +15,12 @@ class   Apartment{
     _type = value;
   }
 
-  late List<BookedDates> _bookeddates;
+  List<BookedDates> _bookeddates = [];
   late List<service> _services;
-String _type ;
+late String _type ;
 late String _location;
 late int _rooms;
-late String _img;
+late List<dynamic> _img;
 
 
   Apartment(
@@ -34,6 +34,8 @@ late String _img;
       this._location,
       this._rooms,
       this._img);
+
+  Apartment.no();
   Apartment.Booked(
       this._id,
       this._name,
@@ -48,6 +50,54 @@ late String _img;
 
   List<service> get services => _services;
 
+
+
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'name': _name,
+      'description': _description,
+      'pricePerNight': _pricePerNight,
+      'bookeddates': _bookeddates.map((date) => {
+        'startDate': date.startDate.toIso8601String(),
+        'endDate': date.endDate.toIso8601String(),
+      }).toList(),
+      'services': _services.map((service) => service.toJson()).toList(),
+      'type': _type,
+      'location': _location,
+      'rooms': _rooms,
+      'img': _img,
+    };
+  }
+
+
+  factory Apartment.fromJson(Map<String, dynamic> json) {
+    final List<dynamic>? bookedDatesJson = json['bookeddates'] as List<dynamic>?;
+    final List<BookedDates>? bookedDates = bookedDatesJson?.map((date) => BookedDates(
+      DateTime.parse(date['startDate']),
+      DateTime.parse(date['endDate']),
+    )).toList();
+
+    final List<dynamic> servicesJson = json['services'] as List<dynamic>;
+    final List<service> services = servicesJson.map((serviceJson) => service.fromJson(serviceJson)).toList();
+
+    final pricePerNight = json['pricePerNight'];
+    final double price = pricePerNight is int ? pricePerNight.toDouble() : pricePerNight;
+
+    return Apartment(
+      json['_id'],
+      json['name'],
+      json['description'],
+      price,
+      bookedDates ?? [],
+      services,
+      json['type'],
+      json['location'],
+      json['rooms'],
+      json['img'],
+    );
+  }
   set services(List<service> value) {
     _services = value;
   }
@@ -58,11 +108,7 @@ late String _img;
     _id = value;
   }
 
-  String get img => _img;
 
-  set img(String value) {
-    _img = value;
-  }
 
   int get rooms => _rooms;
 

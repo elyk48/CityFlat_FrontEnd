@@ -21,6 +21,15 @@ class _ResetpasswordPageState extends State<ResetpasswordPage> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, "/signin");
+          },
+          color: Colors.white, // <-- SEE HERE
+        ),
+      ),
       backgroundColor: Colors.black87,
       body: Form(
         child: ListView(

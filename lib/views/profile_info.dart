@@ -4,7 +4,11 @@ import 'package:cityflat/controllers/user_controller.dart';
 import 'package:cityflat/entities/user_e.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../session.dart';
 
 class Profile_info extends StatefulWidget {
   late String _id;
@@ -15,7 +19,7 @@ class Profile_info extends StatefulWidget {
   late  String _BirthDate;
   late String _image;
 
-   Profile_info(this._id, this._image, this._username, this._email,
+   Profile_info(this._id, this._username, this._email,
       this._number, this._address, this._BirthDate);
 
   @override
@@ -32,6 +36,7 @@ class _Profile_infoState extends State<Profile_info> {
   final FocusNode focusNode2 = FocusNode();
   UserE user = new UserE.noarg();
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -42,34 +47,43 @@ class _Profile_infoState extends State<Profile_info> {
     _BirthDateController.text = widget._BirthDate;
   }
 
-  Future<UserE>UpdateUser(String id  ,UserE user ) async {
-    late Map<String,dynamic> userFromserv;
+  Future<void> UpdateUser(String name ,String email,String number,String address,String birthdate) async {
+    late Map<String, dynamic> userFromServ;
     var prefs = await SharedPreferences.getInstance();
 
 
 
-   await UserController.updateUser(user, prefs.getString("user_token").toString()).then((value) => {
-if(value.statusCode==200){
-        userFromserv=jsonDecode(value.body),
-  setState(() {  user.id=userFromserv["id"];
-  user.name=userFromserv["name"];
-  user.email=userFromserv["email"];
-  user.phoneNumber=userFromserv["number"];
-  user.Birthdate=userFromserv["birthdate"];
-  user.role=userFromserv["role"];
-  user.address=userFromserv["address"];
-  user.password=userFromserv["password"];
-  user.isVerified=userFromserv["isVerified"]; })
+      DateFormat inputFormat = DateFormat('MMM d, yyyy');
+      DateFormat outputFormat = DateFormat('yyyy-MM-dd');
 
+      DateTime dt = inputFormat.parse(birthdate);
+      String formattedDate = outputFormat.format(dt);
 
-}else {
+      print(formattedDate);
 
-  print("Update failed !!")
-}
-    });
-    return user;
+    var response = await UserController.updateUser( name,email,number,address,formattedDate,prefs.getString("user_token").toString(),prefs.getString("user_id").toString() );
 
+    if (response.statusCode == 200) {
+      userFromServ = jsonDecode(response.body);
 
+      setState(() {
+        user.id = userFromServ["id"];
+        user.name = userFromServ["name"];
+        user.email = userFromServ["email"];
+        user.phoneNumber = userFromServ["number"];
+        user.Birthdate = userFromServ["birthdate"];
+        user.role = userFromServ["role"];
+        user.address = userFromServ["address"];
+        user.password = userFromServ["password"];
+        user.isVerified = userFromServ["isVerified"];
+        user.token=prefs.getString("user_token").toString();
+      });
+
+      await Session.setUser_prefs(user.AllToJson());
+    } else {
+      print("Update failed!! ${response.statusCode}");
+      print(response.body);
+    }
 
 
   }
@@ -80,242 +94,144 @@ if(value.statusCode==200){
   TextEditingController _numberController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _BirthDateController = TextEditingController();
-
-  TextEditingController _nameController = TextEditingController();
-
-  Widget _buildEditableText(
-      {required String labelText,
-        required TextEditingController controller,
-        required bool isEditing,
-        required VoidCallback onEditPressed}) {
+//phoneText
+  Widget _buildEditablePhoneText({
+    required String labelText,
+    required TextEditingController controller,
+    required bool isEditing,
+    required VoidCallback onEditPressed,
+  }) {
     return Row(
       mainAxisAlignment:
-      isEditing
-          ? MainAxisAlignment.start:MainAxisAlignment.center,
+      isEditing ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         isEditing
-              ? Expanded(
-                child: TextFormField(
+            ? Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: IntlPhoneField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      initialCountryCode: 'US',
+                      onChanged: (value) {
+                        setState(() {
 
-    cursorColor: Colors.black,
-      autofocus: false,
 
+                          widget._number=value.number;
 
-      style: TextStyle(
-          color: Colors.black,
-          fontFamily: 'alethiapro',
-          fontWeight: FontWeight.normal,
-          fontSize: 17),
-      decoration: InputDecoration(
-        alignLabelWithHint: true,
+                        });
 
-        filled: true,
-        focusColor: Colors.black38,
-        fillColor: Color.fromRGBO(206, 206, 206, 5),
-
-        hintStyle: TextStyle(
-          color: Colors.black,
-          fontFamily: 'AutourOne',
-          fontWeight: FontWeight.normal,
-          fontSize: 14,
-        ),
-        hintText: labelText,
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-                width: 1.5, color: Colors.black87),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-                width: 2, color: Colors.black87),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        errorBorder: OutlineInputBorder(
-            borderRadius:
-            BorderRadius.all(Radius.circular(4)),
-            borderSide: BorderSide(
-                width: 1,
-                color: Colors.red,
-            )),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius:
-          BorderRadius.all(Radius.circular(4)),
-          borderSide: BorderSide(
-            width: 1,
-            color: Colors.red,
-          ),
-        ),
-      ),
-    ),
-              )
-              : Text(
-            controller.text,
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontFamily: 'alethiapro',
-                fontWeight: FontWeight.normal),
-          ),
-       _isEditing? IconButton(
-         icon: Icon(Icons.cancel),
-         onPressed: onEditPressed,
-         color: Colors.white,
-       ):
-        IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: onEditPressed,
-          color: Colors.white,
-        )
-      ],
-    );
-  }
-//datepicker
-  var pickeddate;
-
-  Widget _buildEditableTextDate(
-      {required String labelText,
-        required TextEditingController controller,
-        required bool isEditing,
-        required VoidCallback onEditPressed}) {
-    return Row(
-      mainAxisAlignment:
-      isEditing
-          ? MainAxisAlignment.start:MainAxisAlignment.center,
-      children: [
-         Container(
-           padding: _isEditing?EdgeInsets.only(left: 25):EdgeInsets.only(left: 1),
-           child: Text(
-            controller.text,
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontFamily: 'alethiapro',
-                fontWeight: FontWeight.normal),
-        ),
-         ),
-
-        IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-            DatePicker.showDatePicker(context,
-                showTitleActions: true,
-                minTime: DateTime(1900, 3, 5),
-                maxTime: DateTime(2026, 6, 7), onChanged: (date) {
-                  print('change $date');
-                  setState(() {
-                    pickeddate = "${date.day}";
-                  });
-                }, onConfirm: (date) {
-                  print('confirm $date');
-                  setState(() {
-                    pickeddate =
-                    "Picked Date is : ${date.day}/${date.month}/${date.year}";
-                  });
-                }, currentTime: DateTime.now(), locale: LocaleType.en,theme: DatePickerTheme(
-containerHeight: 400,
-
-                  backgroundColor:Colors.white70,
-                  headerColor:Colors.white70,
-
-                  itemStyle: TextStyle(
-                      fontFamily: 'alethiapro',
-                      fontWeight: FontWeight.bold,
-
-                  color: Colors.black,
-                    backgroundColor: Colors.white70,
+                      },
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'alethiapro',
+                        fontWeight: FontWeight.normal,
+                        fontSize: 17,
+                      ),
+                    ),
                   ),
-                  doneStyle:  TextStyle(
-                      shadows: [
-                        Shadow(
-
-                          color: Color.fromRGBO(255, 215, 0, 5),
-                          offset: Offset(2,2),
-                        )
-
-                      ],
-                      fontSize: 25,
-                      color: Colors.black,
-                      fontFamily: 'alethiapro',
-                      fontWeight: FontWeight.bold),
-                  cancelStyle: TextStyle(
-                    shadows: [
-                      Shadow(
-
-                          color: Colors.black,
-                        offset: Offset(2,2),
-                      )
-
-                    ],
-                      fontSize: 25,
-                      color: Color.fromRGBO(255, 215, 0, 5),
-                      fontFamily: 'alethiapro',
-                      fontWeight: FontWeight.bold),
-
-                ));
+                ],
+              ),
+            ),
+          ),
+        )
+            : Text(
+          controller.text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontFamily: 'alethiapro',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        isEditing
+            ? IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {
+            setState(() {
+              _isEditing = false; // Set _isEditing to false when cancel icon is pressed
+            });
           },
           color: Colors.white,
         )
+            : IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: onEditPressed,
+          color: Colors.white,
+        ),
       ],
     );
   }
 
-  Widget _buildEditableTextName(
-      {required String labelText,
-        required TextEditingController controller,
-        required bool isEditing,
-        required VoidCallback onEditPressed}) {
+
+  Widget _buildEditableTextEmail({
+    required String labelText,
+    required TextEditingController controller,
+    required bool isEditing,
+    required VoidCallback onEditPressed,
+  }) {
     return Row(
-      mainAxisAlignment:
-      isEditing
-          ? MainAxisAlignment.start:MainAxisAlignment.center,
+      mainAxisAlignment: isEditing ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         isEditing
             ? Expanded(
           child: TextFormField(
+            onChanged: (value) {
 
+
+              setState(() {
+
+                widget._email=value;
+              });
+            },
             cursorColor: Colors.black,
             autofocus: false,
-
-
             style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'alethiapro',
-                fontWeight: FontWeight.normal,
-                fontSize: 17),
+              color: Colors.black,
+              fontFamily: 'alethiapro',
+              fontWeight: FontWeight.normal,
+              fontSize: 17,
+            ),
             decoration: InputDecoration(
               alignLabelWithHint: true,
-
               filled: true,
               focusColor: Colors.black38,
               fillColor: Color.fromRGBO(206, 206, 206, 5),
-
               hintStyle: TextStyle(
                 color: Colors.black,
                 fontFamily: 'AutourOne',
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
               ),
+
               hintText: labelText,
               enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                    width: 1.5, color: Colors.black87),
+                borderSide: const BorderSide(width: 1.5, color: Colors.black87),
                 borderRadius: BorderRadius.circular(15),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                    width: 2, color: Colors.black87),
+                borderSide: const BorderSide(width: 2, color: Colors.black87),
                 borderRadius: BorderRadius.circular(15),
               ),
               errorBorder: OutlineInputBorder(
-                  borderRadius:
-                  BorderRadius.all(Radius.circular(4)),
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: Colors.red,
-                  )),
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius:
-                BorderRadius.all(Radius.circular(4)),
+                borderRadius: BorderRadius.all(Radius.circular(4)),
                 borderSide: BorderSide(
                   width: 1,
                   color: Colors.red,
@@ -327,21 +243,265 @@ containerHeight: 400,
             : Text(
           controller.text,
           style: TextStyle(
-              fontSize: 25,
-              color: Colors.white,
-              fontFamily: 'alethiapro',
-              fontWeight: FontWeight.normal),
+            fontSize: 20,
+            color: Colors.white,
+            fontFamily: 'alethiapro',
+            fontWeight: FontWeight.normal,
+          ),
         ),
-        _isEditing? IconButton(
+        isEditing
+            ? IconButton(
           icon: Icon(Icons.cancel),
-          onPressed: onEditPressed,
+          onPressed: () {
+            setState(() {
+              _isEditing = false; // Set _isEditing to false when cancel icon is pressed
+            });
+          },
           color: Colors.white,
-        ):
-        IconButton(
+        )
+            : IconButton(
           icon: Icon(Icons.edit),
           onPressed: onEditPressed,
           color: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEditableTextAddress({
+    required String labelText,
+    required TextEditingController controller,
+    required bool isEditing,
+    required VoidCallback onEditPressed,
+  }) {
+    return Row(
+      mainAxisAlignment: isEditing ? MainAxisAlignment.start : MainAxisAlignment.center,
+      children: [
+        isEditing
+            ? Expanded(
+          child: TextFormField(
+            onChanged: (value) {
+
+
+              setState(() {
+
+                widget._address=value;
+              });
+            },
+            cursorColor: Colors.black,
+            autofocus: false,
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'alethiapro',
+              fontWeight: FontWeight.normal,
+              fontSize: 17,
+            ),
+            decoration: InputDecoration(
+              alignLabelWithHint: true,
+              filled: true,
+              focusColor: Colors.black38,
+              fillColor: Color.fromRGBO(206, 206, 206, 5),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'AutourOne',
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+
+              hintText: labelText,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(width: 1.5, color: Colors.black87),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(width: 2, color: Colors.black87),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
         )
+            : Text(
+          controller.text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontFamily: 'alethiapro',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        isEditing
+            ? IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {
+            setState(() {
+              _isEditing = false; // Set _isEditing to false when cancel icon is pressed
+            });
+          },
+          color: Colors.white,
+        )
+            : IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: onEditPressed,
+          color: Colors.white,
+        ),
+      ],
+    );
+  }
+
+//datepicker
+
+
+  Widget _buildEditableTextDate({
+    required String labelText,
+    required TextEditingController controller,
+    required bool isEditing,
+    required VoidCallback onEditPressed,
+  }) {
+    return Row(
+      mainAxisAlignment: isEditing
+          ? MainAxisAlignment.start
+          : MainAxisAlignment.center,
+      children: [
+        Text(
+          controller.text,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontFamily: 'alethiapro',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: () async {
+            setState(() {
+              _isEditing = true; // Update _isEditing to true when the edit icon is pressed
+            });
+
+            onEditPressed();
+
+            final selectedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2026),
+            );
+
+            if (selectedDate != null) {
+              final formattedDate = DateFormat.yMMMd().format(selectedDate);
+              widget._BirthDate= formattedDate;
+            }
+
+            // Note: No need to update _isEditing to false here
+          },
+          color: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEditableTextName({
+    required String labelText,
+    required TextEditingController controller,
+    required bool isEditing,
+    required VoidCallback onEditPressed,
+  }) {
+    return Row(
+      mainAxisAlignment: isEditing ? MainAxisAlignment.start : MainAxisAlignment.center,
+      children: [
+        isEditing
+            ? Expanded(
+          child: TextFormField(
+onChanged: (value) {
+setState(() {
+  widget._username=value;
+
+});
+
+},
+            cursorColor: Colors.black,
+            autofocus: false,
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'alethiapro',
+              fontWeight: FontWeight.normal,
+              fontSize: 17,
+            ),
+            decoration: InputDecoration(
+              alignLabelWithHint: true,
+              filled: true,
+              focusColor: Colors.black38,
+              fillColor: Color.fromRGBO(206, 206, 206, 5),
+              hintStyle: TextStyle(
+                color: Colors.black,
+                fontFamily: 'AutourOne',
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+              hintText: labelText,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(width: 1.5, color: Colors.black87),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(width: 2, color: Colors.black87),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        )
+            : Text(
+          controller.text,
+          style: TextStyle(
+            fontSize: 25,
+            color: Colors.white,
+            fontFamily: 'alethiapro',
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        isEditing
+            ? IconButton(
+          icon: Icon(Icons.cancel),
+          onPressed: () {
+            setState(() {
+              _isEditing = false; // Set _isEditing to false when cancel icon is pressed
+            });
+          },
+          color: Colors.white,
+        )
+            : IconButton(
+          icon: Icon(Icons.edit),
+          onPressed: onEditPressed,
+          color: Colors.white,
+        ),
       ],
     );
   }
@@ -353,10 +513,9 @@ containerHeight: 400,
       widget._email = _newEmail.isNotEmpty ? _newEmail : widget._email;
       widget._number = _newNumber.isNotEmpty ? _newNumber : widget._number;
       widget._address = _newAddress.isNotEmpty ? _newAddress : widget._address;
-      widget._BirthDate =
-      _newBirthDate.isNotEmpty ? _newBirthDate : widget._BirthDate;
+
     });
-    // TODO: Add code to save updated information to the database
+
   }
 
 
@@ -448,7 +607,7 @@ containerHeight: 400,
                     Container(
                   padding:  EdgeInsets.only(left: 30),
                       alignment: Alignment.center,
-                      child: _buildEditableText(
+                      child: _buildEditableTextEmail(
                         labelText: widget._email,
 
                         controller:_emailController ,
@@ -495,7 +654,7 @@ containerHeight: 400,
                     Container(
                       padding:  EdgeInsets.only(left: 30),
                       alignment: Alignment.center,
-                      child: _buildEditableText(
+                      child: _buildEditablePhoneText(
                         labelText: widget._number,
 
                         controller:_numberController ,
@@ -542,7 +701,7 @@ containerHeight: 400,
                     Container(
                       padding:  EdgeInsets.only(left: 30),
                       alignment: Alignment.center,
-                      child: _buildEditableText(
+                      child: _buildEditableTextAddress(
                         labelText: widget._address,
 
                         controller:_addressController ,
@@ -593,6 +752,7 @@ containerHeight: 400,
 
                         controller:_BirthDateController ,
                         isEditing:_isEditing ,
+
                         onEditPressed: () {
                           setState(() {
                             _isEditing=true;
@@ -634,10 +794,25 @@ containerHeight: 400,
                     backgroundColor: Colors.black87,
                     elevation: 3,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
+                    try {
+                      if (_keyForm.currentState!.validate()) {
+                        _keyForm.currentState!.save();
 
+                      }
+ print("date 2 "+ widget._BirthDate);
+                      _onSavePressed();
+                      UpdateUser(
+                        widget._username,
+                        widget._email,
+                        widget._number,
+                        widget._address,
+                        widget._BirthDate,
+                      );
 
-                    Navigator.pushReplacementNamed(context, "/navBottom");
+                    } catch (error) {
+                      print('An error occurred: $error');
+                    }
                   },
                 ),
 
