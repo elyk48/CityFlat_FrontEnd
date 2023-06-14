@@ -7,6 +7,8 @@ import 'package:cityflat/signin.dart';
 import 'package:cityflat/signup_two.dart';
 import 'package:cityflat/splash_screen.dart';
 import 'package:cityflat/views/email_verification_page.dart';
+import 'package:cityflat/views/help_page.dart';
+import 'package:cityflat/views/wishlist_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cityflat/signup.dart';
 
@@ -60,6 +62,14 @@ class MyApp extends StatelessWidget {
         "/ReservationPage": (BuildContext context) {
           return const ReservationPage();
         },
+        "/WishListPage": (BuildContext context) {
+          return const WishlistPage();
+        },
+
+        "/help": (BuildContext context) {
+          return  HelpPage();
+        },
+
 
 
 

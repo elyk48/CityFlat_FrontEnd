@@ -53,7 +53,7 @@ String searchTxt ="";
      for (int i = 0; i < aparts.length; i++) {
        setState(() {
          Map<String, dynamic> apartment = aparts[i];
-         print(apartment.toString());
+         double rating = (apartment["rating"] ?? 0).toDouble();
          _apparts.add(Apartment.Booked(
            apartment["id"],
            apartment["name"],
@@ -65,6 +65,7 @@ String searchTxt ="";
            apartment["location"],
            apartment["rooms"],
            apartment["img"],
+             rating
          ));
        });
 
@@ -90,7 +91,7 @@ String searchTxt ="";
      for (int i = 0; i < aparts.length; i++) {
        setState(() {
          Map<String, dynamic> apartment = aparts[i];
-         print(apartment.toString());
+         double rating = (apartment["rating"] ?? 0).toDouble();
          _apparts.add(Apartment.Booked(
            apartment["id"],
            apartment["name"],
@@ -102,6 +103,7 @@ String searchTxt ="";
            apartment["location"],
            apartment["rooms"],
            apartment["img"],
+             rating
          ));
        });
 
@@ -127,7 +129,7 @@ String searchTxt ="";
      for (int i = 0; i < aparts.length; i++) {
        setState(() {
          Map<String, dynamic> apartment = aparts[i];
-         print(apartment.toString());
+         double rating = (apartment["rating"] ?? 0).toDouble();
          _apparts.add(
            Apartment.Booked(
              apartment["id"],
@@ -138,6 +140,7 @@ String searchTxt ="";
              apartment["location"],
              apartment["rooms"],
              apartment["img"],
+               rating
            ),
          );
        });
@@ -148,7 +151,7 @@ String searchTxt ="";
    Future<List<Apartment>> fetchAparts() async {
      await Session.getUser_from_prefs(user).then((value) => user = value);
 
-     List<dynamic> aparts=[];
+     List<dynamic> aparts = [];
      await ApartmentController.fetchAparts(user.token).then((value) async {
        aparts = json.decode(value.body);
      });
@@ -158,20 +161,21 @@ String searchTxt ="";
      for (int i = 0; i < aparts.length; i++) {
        setState(() {
          Map<String, dynamic> apartment = aparts[i];
+         double pricePerNight = (apartment["pricePerNight"] ?? 0).toDouble();
+         double rating = (apartment["rating"] ?? 0).toDouble();
+
          _apparts.add(Apartment.Booked(
            apartment["id"],
            apartment["name"],
            apartment["description"],
-           apartment["pricePerNight"].toDouble() ,
-
-
+           pricePerNight,
            apartment["type"],
            apartment["location"],
            apartment["rooms"],
            apartment["img"],
+           rating,
          ));
        });
-
      }
 
      return _apparts;

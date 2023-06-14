@@ -21,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   late Map<String, dynamic>  user= {};
 
+
    Future<Map<String,dynamic>> fetchUser() async {
   UserE userP = new UserE.noarg();
   late Map<String, dynamic>  user;
@@ -79,9 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
       final birthdate = user['birthdate'] != null
           ? DateFormat.yMMMd().format(DateTime.parse(user['birthdate']))
           : '';
+      final image= user['img'];
       return Scaffold(
         backgroundColor: Colors.black,
-        body: Profile_info(id, name, email, number, address, birthdate),
+        body: Profile_info(id, name, email, number, address, birthdate,image),
       );
     }
   }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cityflat/entities/apartment_e.dart';
+
 class UserE {
   late String _id;
   late String _name;
@@ -10,8 +12,15 @@ class UserE {
   late String _Birthdate;
   late String _role;
   late String _img;
+   List<Apartment> _wishlist=[];
 
   String get Birthdate => _Birthdate;
+
+  List<Apartment> get wishlist => _wishlist;
+
+  set wishlist(List<Apartment> value) {
+    _wishlist = value;
+  }
 
   set Birthdate(String value) {
     _Birthdate = value;
@@ -43,8 +52,29 @@ class UserE {
       this._img,
       this._token,
       this._stripeCustomerID,
-      this._isVerified);
+      this._isVerified,
 
+
+      );
+UserE.withWish(
+
+
+    this._id,
+    this._name,
+    this._email,
+    this._password,
+    this._phoneNumber,
+    this._address,
+    this._Birthdate,
+    this._role,
+    this._img,
+    this._token,
+
+    this._isVerified,
+    this._wishlist
+
+
+    );
 
   UserE.NOTOK(
       this._id,

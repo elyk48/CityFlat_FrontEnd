@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/apartment_controller.dart';
+import '../controllers/user_controller.dart';
 import '../entities/apartment_e.dart';
 import '../entities/service_e.dart';
 
@@ -55,6 +56,7 @@ class _AppartmentInfoState extends State<AppartmentInfo> {
   late Map<String,dynamic> ApartFromServ;
   @override
   Widget build(BuildContext context) {
+
     return SizedBox(
       child: Container(
         width: 700,
@@ -128,10 +130,30 @@ setState((){
                           size: 40,
                           color: _alreadySaved ? Colors.red : Colors.grey,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          var prefs = await SharedPreferences.getInstance();
+                          String? token = prefs.getString("user_token");
                           setState(() {
                             _alreadySaved = !_alreadySaved;
                           });
+
+                          if (_alreadySaved) {
+                            // Add apartment to wishlist
+                            if (token != null) {
+                              UserController.addToWishList(widget._id, token);
+                            } else {
+                              // Handle null token case
+                              // Show an error message or perform appropriate action
+                            }
+                          } else {
+                            // Remove apartment from wishlist
+                            if (token != null) {
+                              UserController.removeFromWishList(widget._id, token);
+                            } else {
+                              // Handle null token case
+                              // Show an error message or perform appropriate action
+                            }
+                          }
                         },
                       ),
                     ),

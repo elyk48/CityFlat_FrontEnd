@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cityflat/entities/user_e.dart';
 import 'package:http/http.dart' as http;
@@ -81,23 +82,29 @@ class UserController {
     );
   }
 
-  static Future<http.Response> updateUser(
-  String name ,String email  ,String number , String address, String Birthdate, String token,String UserId) async {
+  static Future<http.Response> updateUser(String name, String email, String number, String address, String birthdate, String token, String userId, File? image) async {
+    var request = http.MultipartRequest('PUT', Uri.http(baseUrl, "/user/$userId"));
 
-    Map<String, dynamic> userData = {
-      "name":name,
-      "email": email,
+    // Add other form fields
+    request.fields['name'] = name;
+    request.fields['email'] = email;
+    request.fields['number'] = number;
+    request.fields['address'] = address;
+    request.fields['birthdate'] = birthdate;
 
-      "number":number,
-      "address":address,
-      "birthdate":Birthdate
-    };
-    var url = Uri.http(baseUrl, "/user/${UserId}");
-    return await http.put(
-      url,
-      headers: Utils.authorizationHeaders(token),
-      body: json.encode(userData),
-    );
+    // Add the image file if available
+    if (image != null) {
+      var stream = http.ByteStream(image.openRead());
+      var length = await image.length();
+
+      var multipartFile = http.MultipartFile('img', stream, length, filename: image.path);
+      request.files.add(multipartFile);
+    }
+
+    request.headers.addAll(Utils.authorizationHeaders(token));
+
+    var response = await request.send();
+    return await http.Response.fromStream(response);
   }
 
   static Future<http.Response> getMyOrders(
@@ -120,15 +127,7 @@ class UserController {
     );
   }
 
-  static Future<http.Response> getMyNotifications(
-     String token) async {
-    var url = Uri.http(baseUrl, "/user/notifications/usernotif");
-    return await http.get(
-      url,
-      headers: Utils.authorizationHeaders(token),
 
-    );
-  }
 
   //create order
   static Future<http.Response?> CreateOrder(double totalprice, String description, String checkin, String checkout, double serviceFees, double nightfees, String token, String apartId, String UserId,List<String> services ) async {
@@ -158,6 +157,91 @@ class UserController {
       print('Error creating order: $e');
       return null; // Return null or an appropriate value to handle the error.
     }
+  }
+//notifciationsa
+  static Future<http.Response> getMyNotifications(
+      String token) async {
+    var url = Uri.http(baseUrl, "/user/notifications/usernotif");
+    return await http.get(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+  static Future<http.Response> MarkNotifcationAsRead(
+     String NotId , String token) async {
+
+    Map<String, dynamic> NotificationData = {
+      "read":true,
+    };
+    var url = Uri.http(baseUrl, "/user/notifications/"+NotId);
+    return await http.put(
+      url,
+      headers: Utils.authorizationHeaders(token),
+      body: json.encode(NotificationData),
+    );
+  }
+
+
+  static Future<http.Response> DeleteAllNotifications(
+      String token) async {
+
+
+    var url = Uri.http(baseUrl, "/user/notifications/usernotif");
+    return await http.delete(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+  static Future<http.Response> DeleteOneNotification(
+     String NotId, String token) async {
+
+
+    var url = Uri.http(baseUrl, "/user/notifications/"+NotId);
+    return await http.delete(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+
+  //wishlist
+
+  static Future<http.Response> addToWishList(
+      String apartId , String token) async {
+
+
+    var url = Uri.http(baseUrl, "/user/wishlist/"+apartId);
+    return await http.put(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+  static Future<http.Response> removeFromWishList(
+      String apartId , String token) async {
+
+
+    var url = Uri.http(baseUrl, "/user/rmwishlist/"+apartId);
+    return await http.put(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
+
+  static Future<http.Response> ListWishlist(
+      String token ) async {
+    var url = Uri.http(baseUrl, "/user/wishlist/list");
+    return await http.get(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
   }
 
 

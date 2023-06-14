@@ -8,6 +8,13 @@ class   Apartment{
  late String _name;
  late String _description;
  late double _pricePerNight;
+ late double _rating;
+
+  double get rating => _rating;
+
+  set rating(double value) {
+    _rating = value;
+  }
 
   String get type => _type;
 
@@ -33,7 +40,9 @@ late List<dynamic> _img;
       this._type,
       this._location,
       this._rooms,
-      this._img);
+      this._img,
+      this._rating
+      );
 
   Apartment.no();
   Apartment.Booked(
@@ -46,7 +55,8 @@ late List<dynamic> _img;
       this._type,
       this._location,
       this._rooms,
-      this._img);
+      this._img,
+      this._rating);
 
   List<service> get services => _services;
 
@@ -68,6 +78,7 @@ late List<dynamic> _img;
       'location': _location,
       'rooms': _rooms,
       'img': _img,
+      'rating':_rating
     };
   }
 
@@ -83,7 +94,10 @@ late List<dynamic> _img;
     final List<service> services = servicesJson.map((serviceJson) => service.fromJson(serviceJson)).toList();
 
     final pricePerNight = json['pricePerNight'];
-    final double price = pricePerNight is int ? pricePerNight.toDouble() : pricePerNight;
+    final double price = pricePerNight is int ? pricePerNight.toDouble() : pricePerNight.toDouble();
+
+    final rating = json['rating'];
+    final double apartmentRating = rating is int ? rating.toDouble() : rating.toDouble();
 
     return Apartment(
       json['_id'],
@@ -96,6 +110,7 @@ late List<dynamic> _img;
       json['location'],
       json['rooms'],
       json['img'],
+      apartmentRating,
     );
   }
   set services(List<service> value) {
@@ -150,6 +165,12 @@ late List<dynamic> _img;
   String toString() {
     return 'apartment{_name: $_name, _description: $_description, _pricePerNight: $_pricePerNight, _bookeddates: $_bookeddates, _type: $_type, _location: $_location, _rooms: $_rooms, _img: $_img}';
  }
+
+  List<dynamic> get img => _img;
+
+  set img(List<dynamic> value) {
+    _img = value;
+  }
 }
 
 

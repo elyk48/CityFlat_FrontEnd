@@ -48,6 +48,26 @@ class _ReservationPageState extends State<ReservationPage> {
     super.initState();
   }
   UserE user = new UserE.noarg();
+
+
+  void refreshReservationPage() {
+    setState(() {
+      fetchOrders().then((value) => {
+        setState(() {
+          _ordersFromServer=value;
+        }),
+
+      });
+      fetchReservations().then((result) => {
+        setState(() {
+          _reservationsFromServer=result;
+        }),
+
+      });
+
+    });
+
+  }
   Future<List<Order>> fetchOrders() async {
     await Session.getUser_from_prefs(user).then((value) => user = value);
 
@@ -155,6 +175,7 @@ class _ReservationPageState extends State<ReservationPage> {
                   state: _ordersFromServer[index].state,
                   orderId: _ordersFromServer[index].id,
                   isPaid: _ordersFromServer[index].isPaied,
+                 refreshCallback: refreshReservationPage
                 );
               },
             ),

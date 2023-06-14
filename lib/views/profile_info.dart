@@ -7,7 +7,8 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../session.dart';
 
 class Profile_info extends StatefulWidget {
@@ -20,13 +21,14 @@ class Profile_info extends StatefulWidget {
   late String _image;
 
    Profile_info(this._id, this._username, this._email,
-      this._number, this._address, this._BirthDate);
+      this._number, this._address, this._BirthDate,this._image);
 
   @override
   State<Profile_info> createState() => _Profile_infoState();
 }
 
 class _Profile_infoState extends State<Profile_info> {
+ File? _selectedImage;
   String _newUsername = '';
   String _newEmail = '';
   String _newNumber = '';
@@ -47,7 +49,7 @@ class _Profile_infoState extends State<Profile_info> {
     _BirthDateController.text = widget._BirthDate;
   }
 
-  Future<void> UpdateUser(String name ,String email,String number,String address,String birthdate) async {
+  Future<void> UpdateUser(String name ,String email,String number,String address,String birthdate,File? image) async {
     late Map<String, dynamic> userFromServ;
     var prefs = await SharedPreferences.getInstance();
 
@@ -61,7 +63,7 @@ class _Profile_infoState extends State<Profile_info> {
 
       print(formattedDate);
 
-    var response = await UserController.updateUser( name,email,number,address,formattedDate,prefs.getString("user_token").toString(),prefs.getString("user_id").toString() );
+    var response = await UserController.updateUser( name,email,number,address,formattedDate,prefs.getString("user_token").toString(),prefs.getString("user_id").toString() ,image);
 
     if (response.statusCode == 200) {
       userFromServ = jsonDecode(response.body);
@@ -88,6 +90,19 @@ class _Profile_infoState extends State<Profile_info> {
 
   }
 
+
+  void _openImagePicker() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _isEditing=true;
+
+        _selectedImage =  File(pickedImage.path);
+      });
+    }
+  }
   bool _isEditing = false;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
@@ -521,6 +536,8 @@ setState(() {
 
   @override
   Widget build(BuildContext context) {
+
+
     return Form(
       key:_keyForm ,
       child: ListView(
@@ -536,7 +553,7 @@ setState(() {
                   radius: 113,
                   child: CircleAvatar(
                     radius: 108,
-                    backgroundImage: AssetImage('assets/images/appart2.jpg'),
+                    backgroundImage: NetworkImage(widget._image),
                   ),
                 ),
                 Positioned(
@@ -556,8 +573,11 @@ setState(() {
                         color: Colors.white,
                         size: 35,
                       ),
-                      onPressed: () {
-                        // Add code to open gallery and allow user to select an image
+                      onPressed: () async {
+
+                        _openImagePicker();
+
+
                       },
                     ),
                   ),
@@ -800,7 +820,7 @@ setState(() {
                         _keyForm.currentState!.save();
 
                       }
- print("date 2 "+ widget._BirthDate);
+
                       _onSavePressed();
                       UpdateUser(
                         widget._username,
@@ -808,8 +828,12 @@ setState(() {
                         widget._number,
                         widget._address,
                         widget._BirthDate,
+                        _selectedImage
                       );
+                      setState(() {
 
+                        _isEditing = false;
+                      });
                     } catch (error) {
                       print('An error occurred: $error');
                     }
@@ -841,41 +865,68 @@ setState(() {
                         elevation: 3,
                       ),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, "/navBottom");
+                        Navigator.pushReplacementNamed(context, "/WishListPage");
                       },
                     ),
                   ),
                 ),
 
 
-                Padding(
-                  padding: const EdgeInsets.only(top:10,bottom: 30),
-                  child: Container(
-                    width: 220,
-                    child: ElevatedButton(
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontFamily: 'alethiapro',
-                          fontWeight: FontWeight.normal,
-                          fontSize: 30,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top:10,bottom: 30,right: 10),
+                      child: Container(
+                        width: 140,
+                        child: ElevatedButton(
+                          child: Text(
+                            "Logout",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'alethiapro',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 30,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+    minimumSize: Size(120, 50),
+    backgroundColor: Colors.white,
+    elevation: 1,
+    ),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, "/signin");
+                          },
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(
-                          width: 2,
-                          color: Colors.white,
-                        ),
-                        minimumSize: Size(120, 50),
-                        backgroundColor: Colors.black87,
-                        elevation: 3,
-                      ),
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(context, "/signin");
-                      },
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.only(top:10,bottom: 30),
+                      child: Container(
+                        width: 140,
+                        child: ElevatedButton(
+                          child: Text(
+                            "Help",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'alethiapro',
+                              fontWeight: FontWeight.normal,
+                              fontSize: 30,
+                            ),
+                          ),
+                          style:   ElevatedButton.styleFrom(
+    minimumSize: Size(120, 50),
+    backgroundColor: Colors.white,
+    elevation: 1,
+    ),
+
+    onPressed: () {
+                            Navigator.pushReplacementNamed(context, "/help");
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

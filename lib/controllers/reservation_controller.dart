@@ -46,6 +46,8 @@ class ReservationController {
 
 
 
+
+
   static Future<http.Response> getOneReservations(
       String token,String reservationId) async {
     var url = Uri.http(baseUrl, "/user/reservations/getOne/"+reservationId);
@@ -57,6 +59,16 @@ class ReservationController {
   }
 
 
+  static Future<http.Response> UserDelcineOrder(
+      String token,String orderId) async {
 
+
+    var url = Uri.http(baseUrl, "/user/order/userDecline/"+orderId);
+    return await http.delete(
+      url,
+      headers: Utils.authorizationHeaders(token),
+
+    );
+  }
 
 }

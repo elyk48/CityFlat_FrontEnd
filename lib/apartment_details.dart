@@ -6,6 +6,7 @@ import 'package:cityflat/entities/user_e.dart';
 import 'package:cityflat/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controllers/user_controller.dart';
 import 'entities/apartment_e.dart';
@@ -60,13 +61,22 @@ class _Multi_selectState extends State<Multi_select> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select services'),
+      title: const Text('Select services',style: TextStyle(
+          fontSize: 20,
+          color: Colors.black,
+          fontFamily: 'alethiapro',
+          fontWeight: FontWeight.normal)),
       content: SingleChildScrollView(
         child: ListBody(
           children: widget.items
               .map((item) => CheckboxListTile(
+            activeColor: Colors.black,
                     value: _selectedItems.contains(item),
-                    title: Text(item),
+                    title: Text(item, style: TextStyle(
+
+                        color: Colors.black,
+                        fontFamily: 'alethiapro',
+                        fontWeight: FontWeight.normal),),
                     controlAffinity: ListTileControlAffinity.leading,
                     onChanged: (isChecked) => _itemChange(item, isChecked!),
                   ))
@@ -78,11 +88,19 @@ class _Multi_selectState extends State<Multi_select> {
             onPressed: _cancel,
             child: const Text(
               'Cancel',
-              style: TextStyle(color: Colors.black),
+                style: TextStyle(
+
+                    color: Colors.black,
+                    fontFamily: 'alethiapro',
+                    fontWeight: FontWeight.normal),
             )),
         ElevatedButton(
           onPressed: _submit,
-          child: const Text('Submit'),
+          child: const Text('Submit', style: TextStyle(
+
+              color: Colors.white,
+              fontFamily: 'alethiapro',
+              fontWeight: FontWeight.normal),),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
           ),
@@ -143,6 +161,7 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
         data['location'],
         data['rooms'],
         data['img'],
+        data['rating'] != null ? data['rating'].toDouble() : 0.0,
       );
 
       // Populate the services list
@@ -212,13 +231,31 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text("Confirmation"),
+                              title: Text("Confirmation",style: TextStyle(
+
+                                  color: Colors.black,
+                                  fontFamily: 'alethiapro',
+                                  fontWeight: FontWeight.normal)),
                               content:
-                                  Text("are you sure you want to prceed ?"),
+                                  Text("are you sure you want to prceed ?",style: TextStyle(
+
+                                      color: Colors.black,
+                                      fontFamily: 'alethiapro',
+                                      fontWeight: FontWeight.normal)),
                               actions: [
                                 TextButton(
-                                    onPressed: () {}, child: Text("cancel")),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    }, child: Text("cancel",style: TextStyle(
+
+                                    color: Colors.black,
+                                    fontFamily: 'alethiapro',
+                                    fontWeight: FontWeight.normal))),
                                 ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black,
+                                    ),
+
                                     onPressed: () async {
                                       try {
                                         UserE user = UserE.noarg();
@@ -373,10 +410,30 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
                               size: 40,
                               color: _alreadySaved ? Colors.red : Colors.grey,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              var prefs = await SharedPreferences.getInstance();
+                              String? token = prefs.getString("user_token");
                               setState(() {
                                 _alreadySaved = !_alreadySaved;
                               });
+
+                              if (_alreadySaved) {
+                                // Add apartment to wishlist
+                                if (token != null) {
+                                  UserController.addToWishList(widget._apartment.id, token);
+                                } else {
+                                  // Handle null token case
+                                  // Show an error message or perform appropriate action
+                                }
+                              } else {
+                                // Remove apartment from wishlist
+                                if (token != null) {
+                                  UserController.removeFromWishList(widget._apartment.id, token);
+                                } else {
+                                  // Handle null token case
+                                  // Show an error message or perform appropriate action
+                                }
+                              }
                             },
                           ),
                         ),
@@ -477,17 +534,24 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
+                                shadowColor: Color.fromRGBO(255, 215, 0, 5),
+                                elevation: 6,
+                                minimumSize: Size(250, 50),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                 ),
                               ),
                               child: Text(
                                 "Select your services",
-                                style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+fontSize: 17,
+                                      color: Colors.black,
+                                      fontFamily: 'alethiapro',
+                                      fontWeight: FontWeight.bold),
                               ),
                               onPressed: _showMultiSelect),
                           Divider(
-                            height: 30,
+                            height: 15,
                           ),
                           Wrap(
                             children: _SelectedItems.map((e) => Chip(
@@ -525,37 +589,75 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                              child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                            child: Text(
-                              '${start.year}/${start.month}/${start.day}',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            onPressed: _pickDateRange,
-                          )),
+                              child:Column(
+                                children: [
+                                  Text(
+                                    'Check-in', // Label for check-in date
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 6,
+                                      shadowColor: Color.fromRGBO(255, 215, 0, 5),
+                                      backgroundColor: Colors.white,
+                                      minimumSize: Size(180, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '${start.year}/${start.month}/${start.day}',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: _pickDateRange,
+                                  ),
+                                ],
+                              ),),
                           const SizedBox(
-                            width: 12,
+                            width: 10,
                           ),
                           Expanded(
-                              child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                            child: Text(
-                              '${end.year}/${end.month}/${end.day}',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            onPressed: _pickDateRange,
-                          )),
+                              child:Column(
+                                children: [
+                                  Text(
+                                    'Check-out', // Label for check-out date
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shadowColor: Color.fromRGBO(255, 215, 0, 5),
+                                      elevation: 6,
+                                      backgroundColor: Colors.white,
+                                      minimumSize: Size(180, 40),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      '${end.year}/${end.month}/${end.day}',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: _pickDateRange,
+                                  ),
+                                ],
+                              ),),
                         ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 20, bottom: 5),
+                      width: 300,
+                      child: Divider(
+                        thickness: 1.5,
+                        color: Colors.white.withOpacity(0.7),
+                        indent: 1,
+                        endIndent: 0,
                       ),
                     ),
                     Container(
@@ -608,13 +710,35 @@ class _ApartmentDetailsState extends State<ApartmentDetails> {
 
   void _pickDateRange() async {
     DateTimeRange? newDateRange = await showDateRangePicker(
-        context: context,
-        initialDateRange: dateRange,
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
-    if (newDateRange == null) return; //cancel
+      context: context,
+      initialDateRange: dateRange,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light().copyWith(
+              primary: Colors.black, // Customize the primary color
+              onPrimary: Colors.white, // Customize the text color
+            ),
+            textTheme: TextTheme(
+              // Customize the font style
+              subtitle1:  TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontFamily: 'alethiapro',
+                  fontWeight: FontWeight.normal)
+            ),
+          ),
+          child: child ?? Container(),
+        );
+      },
+    );
+
+    if (newDateRange == null) return; // Cancel
+
     setState(() {
-      dateRange = newDateRange; //save
+      dateRange = newDateRange; // Save
     });
   }
 }
